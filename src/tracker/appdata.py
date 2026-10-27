@@ -55,13 +55,33 @@ def queries(catalog: str, schema: str) -> Dict[str, str]:
             ORDER BY f.limitation_id, f.severity, i.name""",
         "approvals": f"SELECT workload_id, decision, decided_by, decided_at, note FROM {t}.approvals "
                      f"ORDER BY decided_at DESC LIMIT 200",
-        "actions": f"SELECT performed_at, workload_id, action, detail, dry_run, performed_by "
+        "actions": f"SELECT performed_at, action_id, workload_id, action, detail, dry_run, performed_by "
                    f"FROM {t}.actions_log ORDER BY performed_at DESC LIMIT 200",
         "split_plans": f"SELECT workload_id, verified, applied, created_at FROM {t}.split_plans "
                        f"ORDER BY created_at DESC",
         "validation": f"SELECT * FROM {t}.validation_results ORDER BY validated_at DESC",
         "cost": f"SELECT * FROM {t}.cost_summary ORDER BY job_id",
+        # Optional tables (created by later jobs): a missing one just hides its section.
+        "rewrites": f"SELECT workload_id, language, decision, changes_json, original_source, proposed_source, applied "
+                    f"FROM {t}.proposed_rewrites ORDER BY decision, workload_id",
+        "proofs": f"SELECT notebook, version, source, result, error, proved_at FROM {t}.rewrite_proofs ORDER BY version",
+        "init_translations": f"SELECT script_name, original_script, environment_yaml FROM {t}.init_script_translations",
+        "split_plans_full": f"SELECT workload_id, plan_json, verified, applied FROM {t}.split_plans ORDER BY created_at DESC",
+        "drift": f"SELECT job_key, job_id, job_name, field, in_git, in_workspace, auto_revert, checked_at "
+                 f"FROM {t}.drift_findings ORDER BY job_name, field",
+        "approvers": f"SELECT lower(email) AS email FROM {t}.approvers",
     }
+
+
+OPTIONAL_QUERIES = {"rewrites", "proofs", "init_translations", "split_plans_full", "drift", "approvers"}
+
+
+def is_approver(email: Optional[str], approver_rows: List[Dict[str, Any]]) -> bool:
+    """True when the signed-in user's email (set by the Databricks Apps proxy) is on the approver list.
+
+    The list is kept in a Unity Catalog table and only filled by a workspace admin (09_grant_app)."""
+    e = (email or "").strip().lower()
+    return bool(e) and any((r.get("email") or "").strip().lower() == e for r in approver_rows)
 
 
 def _count(rows: Iterable[Dict[str, Any]], key: str) -> Dict[str, int]:

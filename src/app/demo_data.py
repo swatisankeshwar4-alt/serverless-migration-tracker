@@ -9,7 +9,9 @@ import os
 from datetime import datetime, timezone
 from typing import Any, Dict, List
 
-from tracker import codescan, cost, inventory, readiness, waves
+import json
+
+from tracker import codescan, cost, fixes, initscripts, inventory, readiness, splitter, waves
 
 FIXTURES = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "fixtures")
 
@@ -50,4 +52,32 @@ def build() -> Dict[str, List[Dict[str, Any]]]:
                      for f in all_findings],
         "approvals": [], "actions": [], "split_plans": [], "validation": [],
         "cost": cost.job_summary(cost.compare(sample)),
+        **_fix_examples(jobs, sources),
     }
+
+
+def _fix_examples(jobs, sources) -> Dict[str, List[Dict[str, Any]]]:
+    rewrites = []
+    for path, (src, lang) in sources.items():
+        if lang in ("SCALA", "R"):
+            c = codescan.classify_jvm_or_r(src, lang)
+            rewrites.append({"workload_id": path, "language": lang, "decision": c["decision"],
+                             "changes_json": json.dumps({"effort": c["effort"], "reasons": c["reasons"]}),
+                             "original_source": None, "proposed_source": None, "applied": False})
+            continue
+        new, changes = codescan.rewrite_notebook(src, lang)
+        if changes:
+            rewrites.append({"workload_id": path, "language": lang, "decision": "REWRITE_PROPOSED",
+                             "changes_json": json.dumps(changes), "original_source": src,
+                             "proposed_source": new, "applied": False})
+    with open(os.path.join(FIXTURES, "init_scripts", "install.sh"), encoding="utf-8") as f:
+        script = f.read()
+    plans = []
+    for j in jobs:
+        if splitter.splittable(j):
+            plan = splitter.plan_split(j)
+            plans.append({"workload_id": str(j["job_id"]), "plan_json": json.dumps(plan),
+                          "verified": not splitter.verify_split(j, plan), "applied": False})
+    return {"rewrites": rewrites, "proofs": [], "drift": [], "approvers": [], "split_plans_full": plans,
+            "init_translations": [{"script_name": "install.sh", "original_script": script,
+                                   "environment_yaml": fixes.environment_spec_yaml(initscripts.translate_init_script(script))}]}

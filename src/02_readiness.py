@@ -127,3 +127,27 @@ script_path = os.path.join(os.path.dirname(here), "fixtures", "init_scripts", "i
 with open(script_path, encoding="utf-8") as f:
     translation = initscripts.translate_init_script(f.read())
 print(json.dumps(translation, indent=2))
+
+# COMMAND ----------
+
+# Store the example so the app's Fixes tab can show the script next to the environment spec it becomes.
+from tracker import fixes  # noqa: E402
+
+with open(script_path, encoding="utf-8") as f:
+    script_text = f.read()
+spark.sql(f"""
+CREATE TABLE IF NOT EXISTS {fq}.init_script_translations (
+  script_name      STRING,
+  original_script  STRING COMMENT 'sample script only; real scripts are not stored because they can hold secrets',
+  environment_yaml STRING COMMENT 'serverless environments block for the job, plus manual follow-ups',
+  translation_json STRING,
+  created_at       TIMESTAMP
+) USING DELTA
+""")
+spark.sql(f"DELETE FROM {fq}.init_script_translations WHERE script_name = 'install.sh'")
+spark.createDataFrame(
+    [("install.sh", script_text, fixes.environment_spec_yaml(translation), json.dumps(translation),
+      datetime.now(timezone.utc))],
+    "script_name STRING, original_script STRING, environment_yaml STRING, translation_json STRING, created_at TIMESTAMP",
+).write.mode("append").saveAsTable(f"{fq}.init_script_translations")
+print(fixes.environment_spec_yaml(translation))

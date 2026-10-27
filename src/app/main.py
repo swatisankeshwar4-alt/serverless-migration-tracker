@@ -44,24 +44,34 @@ def load_all():
         try:
             data[name] = db.run(client, sql)
         except Exception as e:  # noqa: BLE001
-            data[name], problems[name] = [], str(e)[:300]
+            data[name] = []
+            if name not in appdata.OPTIONAL_QUERIES:
+                problems[name] = str(e)[:300]
     return data, problems
 
 
-def current_user():
-    """(email, is_admin). Fails closed: anything unexpected means read-only."""
+def current_user(approver_rows):
+    """(email, can_decide). Fails closed: anything unexpected means read-only.
+
+    1. With Databricks Apps user authorization, the user's own token proves they are a workspace admin.
+    2. Otherwise the signed-in email (set by the Apps proxy, not by the browser) must be on the
+       `approvers` list, which only a workspace admin fills (09_grant_app).
+    """
     if LOCAL:
         return "local-preview@example.com", os.getenv("TRACKER_LOCAL_ADMIN") == "1"
     try:
         headers = st.context.headers
         token, email = headers.get("x-forwarded-access-token"), headers.get("x-forwarded-email", "")
-        if not token:
-            return email, False
-        from databricks.sdk import WorkspaceClient
-        host = _service_client().config.host
-        user_client = WorkspaceClient(host=host, token=token, auth_type="pat")
-        is_admin, user_name = approvals.workspace_admin(user_client)
-        return (user_name or email), is_admin and bool(user_name)
+        if token:
+            try:
+                from databricks.sdk import WorkspaceClient
+                user_client = WorkspaceClient(host=_service_client().config.host, token=token, auth_type="pat")
+                is_admin, user_name = approvals.workspace_admin(user_client)
+                if is_admin and user_name:
+                    return user_name, True
+            except Exception:  # noqa: BLE001
+                pass
+        return email, appdata.is_approver(email, approver_rows)
     except Exception:  # noqa: BLE001
         return "", False
 
@@ -97,8 +107,8 @@ if not workloads:
     st.info("The inventory is empty. Run the `[tracker] run all` job, then press Refresh.")
     st.stop()
 
-tab_over, tab_work, tab_block, tab_appr, tab_safe, tab_val, tab_cost = st.tabs(
-    ["Overview", "Workloads", "Blockers", "Approvals", "Safety log", "Validation", "Cost"])
+tab_over, tab_work, tab_block, tab_fix, tab_appr, tab_safe, tab_drift, tab_val, tab_cost = st.tabs(
+    ["Overview", "Workloads", "Blockers", "Fixes", "Approvals", "Safety log", "Drift & rollback", "Validation", "Cost"])
 
 # ---- Overview ----
 with tab_over:
@@ -166,10 +176,72 @@ with tab_block:
         st.dataframe(df(v.to_dict("records"), ["limitation_id", "severity", "name", "workload_type", "detail", "suggested_fix", "auto_fixable"]),
                      width="stretch", hide_index=True)
 
+# ---- Fixes: the automated fixes, shown on real examples ----
+with tab_fix:
+    import json as _json
+    from tracker import fixes as _fixes
+    st.subheader("Automated fixes, shown on examples")
+    st.caption("Every fix writes a NEW copy or a plan. Originals are never edited, and every change can be rolled back.")
+
+    proofs = data.get("proofs", [])
+    st.markdown("#### 1. Proof: the same notebook on serverless, before and after the rewrite (L6, L13)")
+    if proofs:
+        cols = st.columns(len(proofs))
+        for col, p in zip(cols, sorted(proofs, key=lambda x: x["version"])):
+            ok = p["result"] == "SUCCESS"
+            col.metric(f"{p['version'].title()} notebook on serverless", p["result"], delta="runs" if ok else "fails",
+                       delta_color="normal" if ok else "inverse")
+            if p.get("error"):
+                col.caption("Error: " + p["error"][:300])
+        by_v = {p["version"]: p for p in proofs}
+        if "ORIGINAL" in by_v and "REWRITTEN" in by_v:
+            st.code(_fixes.unified_diff(by_v["ORIGINAL"]["source"] or "", by_v["REWRITTEN"]["source"] or "",
+                                        "runnable_demo"), language="diff")
+    else:
+        st.info("Run the `[tracker] apply fixes + prove on serverless` job to run the proof.")
+
+    st.markdown("#### 2. Code rewrites for every scanned notebook (L6 cache/checkpoint/global temp views, L13 ANSI and streaming)")
+    rw = [r for r in data.get("rewrites", []) if r.get("decision") == "REWRITE_PROPOSED"]
+    if rw:
+        pick = st.selectbox("Notebook", [r["workload_id"] for r in rw])
+        r = next(x for x in rw if x["workload_id"] == pick)
+        st.write("**What changed:** " + "; ".join(_fixes.changes_list(r.get("changes_json"))))
+        st.write("**Applied as a copy:** " + ("yes, `" + _fixes.demo_target_path("/Shared/serverless_migration_demo", pick,
+                 "_serverless") + "`" if r.get("applied") else "not yet"))
+        if r.get("original_source") and r.get("proposed_source"):
+            st.code(_fixes.unified_diff(r["original_source"], r["proposed_source"], pick.split("/")[-1]), language="diff")
+        elif r.get("proposed_source"):
+            st.code(r["proposed_source"], language="python")
+        else:
+            st.caption("Source not stored (LIVE mode keeps notebook code out of tables).")
+    jvm = [r for r in data.get("rewrites", []) if r.get("decision") in ("REWRITE_PYSPARK", "KEEP_ON_CLASSIC")]
+    if jvm:
+        st.markdown("**Scala and R (L7): decision per notebook**")
+        st.dataframe(pd.DataFrame([{"notebook": r["workload_id"], "language": r["language"], "decision": r["decision"],
+                                    "why": "; ".join(_fixes.changes_list(r.get("changes_json")))} for r in jvm]),
+                     hide_index=True, width="stretch")
+
+    st.markdown("#### 3. Init script to serverless environment (L3)")
+    it = data.get("init_translations", [])
+    if it:
+        a, b = st.columns(2)
+        a.caption(f"Before: {it[0]['script_name']} (classic init script)")
+        a.code(it[0]["original_script"], language="bash")
+        b.caption("After: serverless job environment")
+        b.code(it[0]["environment_yaml"], language="yaml")
+
+    st.markdown("#### 4. Job with 12 tasks split for the 10-task limit (L2)")
+    sp = [p for p in data.get("split_plans_full", []) if p.get("plan_json")]
+    if sp:
+        plan = _json.loads(sp[0]["plan_json"])
+        st.write(f"Job **{sp[0]['workload_id']}**: verified = {sp[0]['verified']}, applied = {sp[0]['applied']}")
+        st.dataframe(pd.DataFrame(_fixes.split_rows(plan)), hide_index=True, width="stretch")
+
 # ---- Approvals ----
 with tab_appr:
-    who, is_admin = current_user()
-    st.write(f"Signed in as **{who or 'unknown'}**: " + ("workspace admin, you can decide." if is_admin else "read-only (only workspace admins can decide)."))
+    who, is_admin = current_user(data.get("approvers", []))
+    st.write(f"Signed in as **{who or 'unknown'}**: " + ("approver, you can decide." if is_admin else
+             "read-only. Only workspace admins on the approver list can decide (run `[tracker] grant app access` as an admin)."))
     pending = appdata.pending_approvals(workloads)
     st.subheader(f"Ready for a decision ({len(pending)})")
     st.caption("Only classic jobs in wave 1 or 2 enter the gate. Waves 3 and 4 must be remediated or decided on first.")
@@ -202,6 +274,35 @@ with tab_safe:
     st.dataframe(df(data["actions"]), width="stretch", hide_index=True)
     st.subheader("Large-job split plans (L2)")
     st.dataframe(df(data["split_plans"]), width="stretch", hide_index=True)
+
+# ---- Drift & rollback (L9) ----
+with tab_drift:
+    st.subheader("Git (Asset Bundle) vs workspace drift (L9)")
+    dr = data.get("drift", [])
+    if not dr:
+        st.info("Run the `[tracker] drift check (Git vs workspace)` job.")
+    else:
+        drifted = [r for r in dr if r["field"] != "job"]
+        c = st.columns(3)
+        c[0].metric("Jobs checked", len({r["job_key"] for r in dr}))
+        c[1].metric("Jobs drifted", len({r["job_key"] for r in drifted}))
+        c[2].metric("Auto-revertable", sum(1 for r in drifted if r["auto_revert"]))
+        if drifted:
+            st.dataframe(df(drifted, ["job_name", "field", "in_git", "in_workspace", "auto_revert", "checked_at"]),
+                         width="stretch", hide_index=True)
+        else:
+            st.success("Every deployed job matches Git.")
+        st.caption("Top-level settings are reverted by the drift job with enforce=true; task changes are fixed by "
+                   "`databricks bundle deploy`. Every revert stores its undo.")
+    st.subheader("Rollback")
+    acts = data.get("actions", [])
+    undoable = [a for a in acts if not a.get("dry_run") and a.get("action") not in ("ROLLED_BACK",)]
+    st.caption("Real changes the tracker made. Run `[tracker] rollback` with an action_id (or `latest`) to undo one.")
+    st.dataframe(df(undoable, ["performed_at", "action_id", "workload_id", "action", "detail", "performed_by"]), width="stretch", hide_index=True)
+    done = [a for a in acts if a.get("action") == "ROLLED_BACK"]
+    if done:
+        st.write("Rolled back:")
+        st.dataframe(df(done, ["performed_at", "workload_id", "detail", "performed_by"]), width="stretch", hide_index=True)
 
 # ---- Validation ----
 with tab_val:

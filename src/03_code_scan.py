@@ -68,12 +68,13 @@ for path, (src, lang) in sources.items():
         c = codescan.classify_jvm_or_r(src, lang)
         proposals.append((path, lang, c["decision"],
                           json.dumps({"effort": c["effort"], "lines": c["lines"], "reasons": c["reasons"]}),
-                          None, False, now))
+                          None, False, now, None))
     else:
         new_src, changes = codescan.rewrite_notebook(src, lang)
         if changes:
             proposals.append((path, lang, "REWRITE_PROPOSED", json.dumps(changes),
-                              new_src if store_source else None, False, now))
+                              new_src if store_source else None, False, now,
+                              src if store_source else None))
 
 print(f"{len(findings)} findings, {len(proposals)} proposals")
 
@@ -87,9 +88,11 @@ CREATE TABLE IF NOT EXISTS {fq}.proposed_rewrites (
   changes_json    STRING COMMENT 'rule names and counts, or classification reasons; never source text',
   proposed_source STRING COMMENT 'only stored when store_source is true',
   applied         BOOLEAN,
-  created_at      TIMESTAMP
+  created_at      TIMESTAMP,
+  original_source STRING COMMENT 'only stored when store_source is true; shown as a before/after diff'
 ) USING DELTA
 """)
+tables.ensure_column(spark, f"{fq}.proposed_rewrites", "original_source", "STRING")
 
 find_schema = StructType([StructField(n, StringType()) for n in
                           ("workload_id", "limitation_id", "severity", "detail", "suggested_fix")]
@@ -97,7 +100,8 @@ find_schema = StructType([StructField(n, StringType()) for n in
                             StructField("auto_fixable", BooleanType())])
 prop_schema = StructType([StructField(n, StringType()) for n in
                           ("workload_id", "language", "decision", "changes_json", "proposed_source")]
-                         + [StructField("applied", BooleanType()), StructField("created_at", TimestampType())])
+                         + [StructField("applied", BooleanType()), StructField("created_at", TimestampType()),
+                            StructField("original_source", StringType())])
 
 # Replace results for every notebook of this mode (also clears stale findings for notebooks that
 # can no longer be read).
@@ -109,7 +113,8 @@ spark.createDataFrame(
     [(f["workload_id"], f["limitation_id"], f["severity"], f["detail"], f["suggested_fix"], now,
       bool(f.get("auto_fixable"))) for f in findings],
     find_schema).write.mode("append").saveAsTable(f"{fq}.readiness_findings")
-spark.createDataFrame(proposals, prop_schema).write.mode("append").saveAsTable(f"{fq}.proposed_rewrites")
+spark.createDataFrame(proposals, prop_schema).write.mode("append").option("mergeSchema", "true") \
+    .saveAsTable(f"{fq}.proposed_rewrites")
 
 # COMMAND ----------
 

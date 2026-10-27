@@ -26,7 +26,9 @@ def test_fq_rejects_injection():
 
 def test_all_queries_build():
     q = appdata.queries("c", "s")
-    assert set(q) == {"workloads", "findings", "approvals", "actions", "split_plans", "validation", "cost"}
+    assert set(q) == {"workloads", "findings", "approvals", "actions", "split_plans", "validation", "cost",
+                      "rewrites", "proofs", "init_translations", "split_plans_full", "drift", "approvers"}
+    assert appdata.OPTIONAL_QUERIES < set(q)
     assert all("`c`.`s`" in sql for sql in q.values())
 
 
@@ -84,3 +86,10 @@ def test_to_records_converts_by_type_and_keeps_nulls():
     assert rows[0] == {"id": "a", "n": 3, "x": 1.5, "ok": True, "d": 2.25}
     assert rows[1] == {"id": "b", "n": None, "x": None, "ok": False, "d": None}
     assert appdata.to_records(cols, None) == []
+
+
+def test_is_approver_is_exact_and_case_insensitive():
+    rows = [{"email": "admin@example.com"}]
+    assert appdata.is_approver("Admin@Example.com", rows)
+    assert not appdata.is_approver("admin@example.com.evil", rows)
+    assert not appdata.is_approver("", rows) and not appdata.is_approver(None, rows)

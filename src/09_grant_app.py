@@ -43,3 +43,31 @@ statements = [
 for s in statements:
     spark.sql(s)
     print("ok:", s)
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## Approver list
+# MAGIC The app lets a user approve only if Databricks Apps user authorization proves they are a workspace
+# MAGIC admin, or their email is in `approvers`. Only a workspace admin running this notebook adds
+# MAGIC themselves; nobody can add an email from the app.
+
+# COMMAND ----------
+
+import os as _os
+import sys as _sys
+
+_sys.path.insert(0, _os.getcwd())
+from tracker import approvals as _approvals  # noqa: E402
+
+spark.sql(f"""CREATE TABLE IF NOT EXISTS {fq}.approvers (
+  email STRING, added_by STRING, added_at TIMESTAMP) USING DELTA""")
+is_admin, me = _approvals.workspace_admin(WorkspaceClient())
+if is_admin and me:
+    spark.sql(f"""MERGE INTO {fq}.approvers t USING (SELECT lower(:me) AS email) s ON t.email = s.email
+                  WHEN NOT MATCHED THEN INSERT (email, added_by, added_at) VALUES (s.email, s.email, current_timestamp())""",
+              args={"me": me})
+    print(f"{me} is a workspace admin: added to approvers")
+else:
+    print("You are not a workspace admin: approvers list unchanged")
+display(spark.sql(f"SELECT * FROM {fq}.approvers"))

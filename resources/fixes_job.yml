@@ -1,0 +1,40 @@
+resources:
+  jobs:
+    apply_fixes:
+      name: "[tracker] apply fixes + prove on serverless"
+      tasks:
+        - task_key: apply_fixes
+          notebook_task:
+            notebook_path: ../src/08_apply_fixes.py
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: ${var.schema}
+              # Writes NEW notebook copies only (originals are never edited); admin only; undo is logged.
+              dry_run: "false"
+              prove: "true"
+      # No cluster block: runs on serverless compute.
+
+    drift:
+      name: "[tracker] drift check (Git vs workspace)"
+      tasks:
+        - task_key: drift
+          notebook_task:
+            notebook_path: ../src/10_drift.py
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: ${var.schema}
+              discovery_mode: ${var.discovery_mode}
+              cost_source: ${var.cost_source}
+              enforce: "false"
+
+    rollback:
+      name: "[tracker] rollback"
+      tasks:
+        - task_key: rollback
+          notebook_task:
+            notebook_path: ../src/11_rollback.py
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: ${var.schema}
+              action_id: ""
+              dry_run: "true"
