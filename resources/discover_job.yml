@@ -1,0 +1,13 @@
+resources:
+  jobs:
+    discover:
+      name: "[tracker] discover workloads"
+      tasks:
+        - task_key: discover
+          notebook_task:
+            notebook_path: ../src/01_discover.py
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: ${var.schema}
+              mode: ${var.discovery_mode}
+          # No cluster block: runs on serverless compute.

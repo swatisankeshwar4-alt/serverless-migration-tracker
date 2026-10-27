@@ -1,0 +1,22 @@
+[
+  {
+    "cluster_id": "0000-000001-fixture1",
+    "cluster_name": "shared-analytics",
+    "creator_user_name": "alice@example.com",
+    "spark_version": "13.3.x-scala2.12",
+    "node_type_id": "i3.xlarge",
+    "num_workers": 4,
+    "cluster_log_conf": {"dbfs": {"destination": "dbfs:/cluster-logs"}},
+    "ssh_public_keys": ["ssh-rsa AAAAEXAMPLEKEY fixture"],
+    "init_scripts": [{"s3": {"destination": "s3://example-bucket/init/cluster_init.sh"}}]
+  },
+  {
+    "cluster_id": "0000-000002-fixture2",
+    "cluster_name": "ml-gpu",
+    "creator_user_name": "dave@example.com",
+    "spark_version": "14.3.x-gpu-ml-scala2.12",
+    "node_type_id": "g5.xlarge",
+    "num_workers": 1,
+    "cluster_log_conf": {"s3": {"destination": "s3://example-bucket/cluster-logs"}}
+  }
+]

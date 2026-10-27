@@ -1,0 +1,469 @@
+[
+  {
+    "job_id": 1001,
+    "creator_user_name": "alice@example.com",
+    "settings": {
+      "name": "etl_daily_orders",
+      "tags": {
+        "team": "data-eng"
+      },
+      "schedule": {
+        "quartz_cron_expression": "0 0 2 * * ?",
+        "timezone_id": "UTC",
+        "pause_status": "UNPAUSED"
+      },
+      "job_clusters": [
+        {
+          "job_cluster_key": "main",
+          "new_cluster": {
+            "spark_version": "15.4.x-scala2.12",
+            "node_type_id": "i3.xlarge",
+            "num_workers": 2
+          }
+        }
+      ],
+      "tasks": [
+        {
+          "task_key": "extract",
+          "job_cluster_key": "main",
+          "notebook_task": {
+            "notebook_path": "/Shared/fixtures/etl_extract"
+          }
+        },
+        {
+          "task_key": "transform",
+          "job_cluster_key": "main",
+          "depends_on": [
+            {
+              "task_key": "extract"
+            }
+          ],
+          "notebook_task": {
+            "notebook_path": "/Shared/fixtures/etl_transform"
+          }
+        },
+        {
+          "task_key": "load",
+          "job_cluster_key": "main",
+          "depends_on": [
+            {
+              "task_key": "transform"
+            }
+          ],
+          "notebook_task": {
+            "notebook_path": "/Shared/fixtures/etl_load"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "job_id": 1002,
+    "creator_user_name": "bob@example.com",
+    "settings": {
+      "name": "legacy_init_script_job",
+      "tags": {
+        "team": "finance"
+      },
+      "tasks": [
+        {
+          "task_key": "run",
+          "notebook_task": {
+            "notebook_path": "/Shared/fixtures/legacy_job"
+          },
+          "new_cluster": {
+            "spark_version": "12.2.x-scala2.12",
+            "node_type_id": "i3.xlarge",
+            "num_workers": 1,
+            "init_scripts": [
+              {
+                "s3": {
+                  "destination": "s3://example-bucket/init/install.sh"
+                }
+              }
+            ],
+            "aws_attributes": {
+              "instance_profile_arn": "arn:aws:iam::000000000000:instance-profile/example-profile"
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "job_id": 1003,
+    "creator_user_name": "alice@example.com",
+    "settings": {
+      "name": "jar_and_egg_job",
+      "tags": {
+        "team": "data-eng"
+      },
+      "job_clusters": [
+        {
+          "job_cluster_key": "main",
+          "new_cluster": {
+            "spark_version": "14.3.x-scala2.12",
+            "node_type_id": "i3.xlarge",
+            "num_workers": 2
+          }
+        }
+      ],
+      "tasks": [
+        {
+          "task_key": "jar_step",
+          "job_cluster_key": "main",
+          "spark_jar_task": {
+            "main_class_name": "com.example.Main"
+          },
+          "libraries": [
+            {
+              "jar": "dbfs:/FileStore/jars/app.jar"
+            },
+            {
+              "maven": {
+                "coordinates": "com.example:lib:1.0"
+              }
+            },
+            {
+              "egg": "dbfs:/FileStore/eggs/old.egg"
+            }
+          ]
+        },
+        {
+          "task_key": "notebook_step",
+          "job_cluster_key": "main",
+          "depends_on": [
+            {
+              "task_key": "jar_step"
+            }
+          ],
+          "notebook_task": {
+            "notebook_path": "/Shared/fixtures/post_jar"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "job_id": 1004,
+    "creator_user_name": "carol@example.com",
+    "settings": {
+      "name": "big_pipeline_12_tasks",
+      "tags": {
+        "team": "analytics"
+      },
+      "job_clusters": [
+        {
+          "job_cluster_key": "main",
+          "new_cluster": {
+            "spark_version": "15.4.x-scala2.12",
+            "node_type_id": "i3.xlarge",
+            "num_workers": 2
+          }
+        }
+      ],
+      "tasks": [
+        {
+          "task_key": "t01",
+          "job_cluster_key": "main",
+          "notebook_task": {
+            "notebook_path": "/Shared/fixtures/step_01"
+          }
+        },
+        {
+          "task_key": "t02",
+          "job_cluster_key": "main",
+          "depends_on": [
+            {
+              "task_key": "t01"
+            }
+          ],
+          "notebook_task": {
+            "notebook_path": "/Shared/fixtures/step_02"
+          }
+        },
+        {
+          "task_key": "t03",
+          "job_cluster_key": "main",
+          "depends_on": [
+            {
+              "task_key": "t02"
+            }
+          ],
+          "notebook_task": {
+            "notebook_path": "/Shared/fixtures/step_03"
+          }
+        },
+        {
+          "task_key": "t04",
+          "job_cluster_key": "main",
+          "depends_on": [
+            {
+              "task_key": "t03"
+            }
+          ],
+          "notebook_task": {
+            "notebook_path": "/Shared/fixtures/step_04"
+          }
+        },
+        {
+          "task_key": "t05",
+          "job_cluster_key": "main",
+          "depends_on": [
+            {
+              "task_key": "t04"
+            }
+          ],
+          "notebook_task": {
+            "notebook_path": "/Shared/fixtures/step_05"
+          }
+        },
+        {
+          "task_key": "t06",
+          "job_cluster_key": "main",
+          "depends_on": [
+            {
+              "task_key": "t05"
+            }
+          ],
+          "notebook_task": {
+            "notebook_path": "/Shared/fixtures/step_06"
+          }
+        },
+        {
+          "task_key": "t07",
+          "job_cluster_key": "main",
+          "depends_on": [
+            {
+              "task_key": "t06"
+            }
+          ],
+          "notebook_task": {
+            "notebook_path": "/Shared/fixtures/step_07"
+          }
+        },
+        {
+          "task_key": "t08",
+          "job_cluster_key": "main",
+          "depends_on": [
+            {
+              "task_key": "t07"
+            }
+          ],
+          "notebook_task": {
+            "notebook_path": "/Shared/fixtures/step_08"
+          }
+        },
+        {
+          "task_key": "t09",
+          "job_cluster_key": "main",
+          "depends_on": [
+            {
+              "task_key": "t08"
+            }
+          ],
+          "notebook_task": {
+            "notebook_path": "/Shared/fixtures/step_09"
+          }
+        },
+        {
+          "task_key": "t10",
+          "job_cluster_key": "main",
+          "depends_on": [
+            {
+              "task_key": "t09"
+            }
+          ],
+          "notebook_task": {
+            "notebook_path": "/Shared/fixtures/step_10"
+          }
+        },
+        {
+          "task_key": "t11",
+          "job_cluster_key": "main",
+          "depends_on": [
+            {
+              "task_key": "t10"
+            }
+          ],
+          "notebook_task": {
+            "notebook_path": "/Shared/fixtures/step_11"
+          }
+        },
+        {
+          "task_key": "t12",
+          "job_cluster_key": "main",
+          "depends_on": [
+            {
+              "task_key": "t11"
+            }
+          ],
+          "notebook_task": {
+            "notebook_path": "/Shared/fixtures/step_12"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "job_id": 1005,
+    "creator_user_name": "dave@example.com",
+    "settings": {
+      "name": "ml_runtime_job",
+      "tags": {
+        "team": "ml"
+      },
+      "tasks": [
+        {
+          "task_key": "train",
+          "notebook_task": {
+            "notebook_path": "/Shared/fixtures/train_model"
+          },
+          "new_cluster": {
+            "spark_version": "14.3.x-cpu-ml-scala2.12",
+            "node_type_id": "i3.xlarge",
+            "num_workers": 1,
+            "docker_image": {
+              "url": "example/custom-image:1.0"
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "job_id": 1006,
+    "creator_user_name": "carol@example.com",
+    "settings": {
+      "name": "scala_report_job",
+      "tags": {
+        "team": "analytics"
+      },
+      "tasks": [
+        {
+          "task_key": "report",
+          "notebook_task": {
+            "notebook_path": "/Shared/fixtures/scala_report"
+          },
+          "new_cluster": {
+            "spark_version": "15.4.x-scala2.12",
+            "node_type_id": "i3.xlarge",
+            "num_workers": 1
+          }
+        }
+      ]
+    }
+  },
+  {
+    "job_id": 1007,
+    "creator_user_name": "alice@example.com",
+    "settings": {
+      "name": "already_serverless_job",
+      "tags": {
+        "team": "data-eng"
+      },
+      "environments": [
+        {
+          "environment_key": "default",
+          "spec": {
+            "client": "2"
+          }
+        }
+      ],
+      "tasks": [
+        {
+          "task_key": "run",
+          "environment_key": "default",
+          "notebook_task": {
+            "notebook_path": "/Shared/fixtures/serverless_job"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "job_id": 1008,
+    "creator_user_name": "alice@example.com",
+    "settings": {
+      "name": "etl_daily_orders [serverless clone]",
+      "tags": {
+        "team": "data-eng"
+      },
+      "schedule": {
+        "quartz_cron_expression": "0 0 2 * * ?",
+        "timezone_id": "UTC",
+        "pause_status": "UNPAUSED"
+      },
+      "environments": [
+        {
+          "environment_key": "default",
+          "spec": {
+            "client": "2"
+          }
+        }
+      ],
+      "tasks": [
+        {
+          "task_key": "extract",
+          "environment_key": "default",
+          "notebook_task": {
+            "notebook_path": "/Shared/fixtures/etl_extract"
+          }
+        },
+        {
+          "task_key": "transform",
+          "environment_key": "default",
+          "depends_on": [
+            {
+              "task_key": "extract"
+            }
+          ],
+          "notebook_task": {
+            "notebook_path": "/Shared/fixtures/etl_transform"
+          }
+        },
+        {
+          "task_key": "load",
+          "environment_key": "default",
+          "depends_on": [
+            {
+              "task_key": "transform"
+            }
+          ],
+          "notebook_task": {
+            "notebook_path": "/Shared/fixtures/etl_load"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "job_id": 1009,
+    "creator_user_name": "erin@example.com",
+    "settings": {
+      "name": "simple_classic_job",
+      "tags": {
+        "team": "analytics"
+      },
+      "job_clusters": [
+        {
+          "job_cluster_key": "main",
+          "new_cluster": {
+            "spark_version": "15.4.x-scala2.12",
+            "node_type_id": "i3.xlarge",
+            "num_workers": 1
+          }
+        }
+      ],
+      "tasks": [
+        {
+          "task_key": "run",
+          "job_cluster_key": "main",
+          "notebook_task": {
+            "notebook_path": "/Shared/fixtures/simple_task"
+          }
+        }
+      ]
+    }
+  }
+]

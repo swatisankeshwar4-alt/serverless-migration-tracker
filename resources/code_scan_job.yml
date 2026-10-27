@@ -1,0 +1,52 @@
+resources:
+  jobs:
+    code_scan:
+      name: "[tracker] code scan"
+      tasks:
+        - task_key: code_scan
+          notebook_task:
+            notebook_path: ../src/03_code_scan.py
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: ${var.schema}
+              mode: ${var.discovery_mode}
+          # No cluster block: runs on serverless compute.
+
+    # One click: discover -> code scan -> safety (split plans, duplicate schedules, dry run) -> readiness.
+    pipeline:
+      name: "[tracker] run all"
+      tasks:
+        - task_key: discover
+          notebook_task:
+            notebook_path: ../src/01_discover.py
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: ${var.schema}
+              mode: ${var.discovery_mode}
+        - task_key: code_scan
+          depends_on:
+            - task_key: discover
+          notebook_task:
+            notebook_path: ../src/03_code_scan.py
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: ${var.schema}
+              mode: ${var.discovery_mode}
+        - task_key: safety
+          depends_on:
+            - task_key: code_scan
+          notebook_task:
+            notebook_path: ../src/05_safety.py
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: ${var.schema}
+              mode: ${var.discovery_mode}
+        - task_key: readiness
+          depends_on:
+            - task_key: safety
+          notebook_task:
+            notebook_path: ../src/02_readiness.py
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: ${var.schema}
+              mode: ${var.discovery_mode}

@@ -1,0 +1,15 @@
+resources:
+  jobs:
+    validate:
+      name: "[tracker] A/B validation"
+      tasks:
+        - task_key: validate
+          notebook_task:
+            notebook_path: ../src/07_validate.py
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: ${var.schema}
+              mode: DEMO
+      # No cluster block: runs on serverless compute.
+      # For a real migration use "Run now with different parameters": mode=TABLES, workload_id, classic_table,
+      # serverless_table, key_columns, ignore_columns, update_status.

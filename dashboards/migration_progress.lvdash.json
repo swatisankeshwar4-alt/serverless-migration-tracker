@@ -1,0 +1,716 @@
+{
+  "datasets": [
+    {
+      "name": "kpis",
+      "displayName": "KPIs",
+      "queryLines": [
+        "SELECT count(*) AS total_jobs,\n",
+        "       count_if(i.compute_kind = 'SERVERLESS' OR s.status = 'DONE') AS on_serverless,\n",
+        "       count_if(s.status = 'READY') AS ready,\n",
+        "       count_if(s.status = 'BLOCKED') AS blocked,\n",
+        "       count_if(s.status = 'APPROVED') AS approved,\n",
+        "       round(avg(CASE WHEN i.compute_kind <> 'SERVERLESS' THEN s.readiness_score END), 1) AS avg_readiness\n",
+        "FROM inventory_workloads i LEFT JOIN migration_status s ON s.workload_id = i.workload_id\n",
+        "WHERE i.workload_type = 'JOB'\n"
+      ]
+    },
+    {
+      "name": "status",
+      "displayName": "Jobs by status",
+      "queryLines": [
+        "SELECT coalesce(s.status, 'DISCOVERED') AS status, count(*) AS jobs\n",
+        "FROM inventory_workloads i LEFT JOIN migration_status s ON s.workload_id = i.workload_id\n",
+        "WHERE i.workload_type = 'JOB' GROUP BY 1\n"
+      ]
+    },
+    {
+      "name": "waves",
+      "displayName": "Classic jobs by wave",
+      "queryLines": [
+        "SELECT concat('Wave ', s.wave) AS wave, count(*) AS jobs\n",
+        "FROM inventory_workloads i JOIN migration_status s ON s.workload_id = i.workload_id\n",
+        "WHERE i.workload_type = 'JOB' AND i.compute_kind <> 'SERVERLESS' AND s.wave IS NOT NULL GROUP BY 1\n"
+      ]
+    },
+    {
+      "name": "limits",
+      "displayName": "Limitations found",
+      "queryLines": [
+        "SELECT limitation_id, count(DISTINCT workload_id) AS workloads_affected,\n",
+        "       count_if(severity = 'BLOCKER') AS blockers, count_if(auto_fixable) AS auto_fixable\n",
+        "FROM readiness_findings GROUP BY 1 ORDER BY cast(substr(limitation_id, 2) AS INT)\n"
+      ]
+    },
+    {
+      "name": "jobs",
+      "displayName": "Job readiness",
+      "queryLines": [
+        "SELECT i.name, i.owner, i.compute_kind, i.task_count, s.readiness_score, s.status, s.wave,\n",
+        "       (SELECT count(*) FROM readiness_findings f WHERE f.workload_id = i.workload_id AND f.severity = 'BLOCKER') AS blockers\n",
+        "FROM inventory_workloads i LEFT JOIN migration_status s ON s.workload_id = i.workload_id\n",
+        "WHERE i.workload_type = 'JOB' ORDER BY s.readiness_score\n"
+      ]
+    },
+    {
+      "name": "cost",
+      "displayName": "Cost before vs after",
+      "queryLines": [
+        "SELECT job_name, team_tag, state, before_dbus, after_dbus, before_dbu_per_run, after_dbu_per_run,\n",
+        "       dbu_per_run_change_pct, before_cost_usd, after_cost_usd, cost_per_run_change_pct\n",
+        "FROM cost_summary ORDER BY job_name\n"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "progress",
+      "displayName": "Migration progress",
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layout": [
+        {
+          "widget": {
+            "name": "k_jobs",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "kpis",
+                  "fields": [
+                    {
+                      "name": "total_jobs",
+                      "expression": "`total_jobs`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "total_jobs",
+                  "displayName": "Jobs"
+                }
+              },
+              "frame": {
+                "title": "Jobs",
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 1,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "k_srv",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "kpis",
+                  "fields": [
+                    {
+                      "name": "on_serverless",
+                      "expression": "`on_serverless`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "on_serverless",
+                  "displayName": "On serverless"
+                }
+              },
+              "frame": {
+                "title": "On serverless",
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 1,
+            "y": 0,
+            "width": 1,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "k_ready",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "kpis",
+                  "fields": [
+                    {
+                      "name": "ready",
+                      "expression": "`ready`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "ready",
+                  "displayName": "Ready"
+                }
+              },
+              "frame": {
+                "title": "Ready",
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 2,
+            "y": 0,
+            "width": 1,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "k_block",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "kpis",
+                  "fields": [
+                    {
+                      "name": "blocked",
+                      "expression": "`blocked`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "blocked",
+                  "displayName": "Blocked"
+                }
+              },
+              "frame": {
+                "title": "Blocked",
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 0,
+            "width": 1,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "k_appr",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "kpis",
+                  "fields": [
+                    {
+                      "name": "approved",
+                      "expression": "`approved`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "approved",
+                  "displayName": "Approved"
+                }
+              },
+              "frame": {
+                "title": "Approved",
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 0,
+            "width": 1,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "k_avg",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "kpis",
+                  "fields": [
+                    {
+                      "name": "avg_readiness",
+                      "expression": "`avg_readiness`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "avg_readiness",
+                  "displayName": "Avg readiness (classic)"
+                }
+              },
+              "frame": {
+                "title": "Avg readiness (classic)",
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 5,
+            "y": 0,
+            "width": 1,
+            "height": 3
+          }
+        },
+        {
+          "widget": {
+            "name": "c_status",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "status",
+                  "fields": [
+                    {
+                      "name": "status",
+                      "expression": "`status`"
+                    },
+                    {
+                      "name": "sum(jobs)",
+                      "expression": "SUM(`jobs`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "status",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "status"
+                },
+                "y": {
+                  "fieldName": "sum(jobs)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "jobs"
+                }
+              },
+              "frame": {
+                "title": "Jobs by status",
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 3,
+            "width": 3,
+            "height": 7
+          }
+        },
+        {
+          "widget": {
+            "name": "c_wave",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "waves",
+                  "fields": [
+                    {
+                      "name": "wave",
+                      "expression": "`wave`"
+                    },
+                    {
+                      "name": "sum(jobs)",
+                      "expression": "SUM(`jobs`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "wave",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "wave"
+                },
+                "y": {
+                  "fieldName": "sum(jobs)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "jobs"
+                }
+              },
+              "frame": {
+                "title": "Classic jobs by wave",
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 3,
+            "width": 3,
+            "height": 7
+          }
+        },
+        {
+          "widget": {
+            "name": "t_limits",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "limits",
+                  "fields": [
+                    {
+                      "name": "limitation_id",
+                      "expression": "`limitation_id`"
+                    },
+                    {
+                      "name": "workloads_affected",
+                      "expression": "`workloads_affected`"
+                    },
+                    {
+                      "name": "blockers",
+                      "expression": "`blockers`"
+                    },
+                    {
+                      "name": "auto_fixable",
+                      "expression": "`auto_fixable`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {
+                    "fieldName": "limitation_id",
+                    "displayName": "limitation_id"
+                  },
+                  {
+                    "fieldName": "workloads_affected",
+                    "displayName": "workloads_affected"
+                  },
+                  {
+                    "fieldName": "blockers",
+                    "displayName": "blockers"
+                  },
+                  {
+                    "fieldName": "auto_fixable",
+                    "displayName": "auto_fixable"
+                  }
+                ]
+              },
+              "invisibleCols": [],
+              "allowHTMLByDefault": false,
+              "itemsPerPage": 25,
+              "paginationSize": "default",
+              "condensed": true,
+              "withRowNumber": false,
+              "frame": {
+                "title": "Limitations found (blockers and automated fixes)",
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 10,
+            "width": 6,
+            "height": 7
+          }
+        },
+        {
+          "widget": {
+            "name": "t_jobs",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "jobs",
+                  "fields": [
+                    {
+                      "name": "name",
+                      "expression": "`name`"
+                    },
+                    {
+                      "name": "owner",
+                      "expression": "`owner`"
+                    },
+                    {
+                      "name": "compute_kind",
+                      "expression": "`compute_kind`"
+                    },
+                    {
+                      "name": "task_count",
+                      "expression": "`task_count`"
+                    },
+                    {
+                      "name": "readiness_score",
+                      "expression": "`readiness_score`"
+                    },
+                    {
+                      "name": "status",
+                      "expression": "`status`"
+                    },
+                    {
+                      "name": "wave",
+                      "expression": "`wave`"
+                    },
+                    {
+                      "name": "blockers",
+                      "expression": "`blockers`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {
+                    "fieldName": "name",
+                    "displayName": "name"
+                  },
+                  {
+                    "fieldName": "owner",
+                    "displayName": "owner"
+                  },
+                  {
+                    "fieldName": "compute_kind",
+                    "displayName": "compute_kind"
+                  },
+                  {
+                    "fieldName": "task_count",
+                    "displayName": "task_count"
+                  },
+                  {
+                    "fieldName": "readiness_score",
+                    "displayName": "readiness_score"
+                  },
+                  {
+                    "fieldName": "status",
+                    "displayName": "status"
+                  },
+                  {
+                    "fieldName": "wave",
+                    "displayName": "wave"
+                  },
+                  {
+                    "fieldName": "blockers",
+                    "displayName": "blockers"
+                  }
+                ]
+              },
+              "invisibleCols": [],
+              "allowHTMLByDefault": false,
+              "itemsPerPage": 25,
+              "paginationSize": "default",
+              "condensed": true,
+              "withRowNumber": false,
+              "frame": {
+                "title": "Job readiness",
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 17,
+            "width": 6,
+            "height": 9
+          }
+        }
+      ]
+    },
+    {
+      "name": "cost",
+      "displayName": "Cost",
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layout": [
+        {
+          "widget": {
+            "name": "t_cost",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "cost",
+                  "fields": [
+                    {
+                      "name": "job_name",
+                      "expression": "`job_name`"
+                    },
+                    {
+                      "name": "team_tag",
+                      "expression": "`team_tag`"
+                    },
+                    {
+                      "name": "state",
+                      "expression": "`state`"
+                    },
+                    {
+                      "name": "before_dbus",
+                      "expression": "`before_dbus`"
+                    },
+                    {
+                      "name": "after_dbus",
+                      "expression": "`after_dbus`"
+                    },
+                    {
+                      "name": "dbu_per_run_change_pct",
+                      "expression": "`dbu_per_run_change_pct`"
+                    },
+                    {
+                      "name": "before_cost_usd",
+                      "expression": "`before_cost_usd`"
+                    },
+                    {
+                      "name": "after_cost_usd",
+                      "expression": "`after_cost_usd`"
+                    },
+                    {
+                      "name": "cost_per_run_change_pct",
+                      "expression": "`cost_per_run_change_pct`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {
+                    "fieldName": "job_name",
+                    "displayName": "job_name"
+                  },
+                  {
+                    "fieldName": "team_tag",
+                    "displayName": "team_tag"
+                  },
+                  {
+                    "fieldName": "state",
+                    "displayName": "state"
+                  },
+                  {
+                    "fieldName": "before_dbus",
+                    "displayName": "before_dbus"
+                  },
+                  {
+                    "fieldName": "after_dbus",
+                    "displayName": "after_dbus"
+                  },
+                  {
+                    "fieldName": "dbu_per_run_change_pct",
+                    "displayName": "dbu_per_run_change_pct"
+                  },
+                  {
+                    "fieldName": "before_cost_usd",
+                    "displayName": "before_cost_usd"
+                  },
+                  {
+                    "fieldName": "after_cost_usd",
+                    "displayName": "after_cost_usd"
+                  },
+                  {
+                    "fieldName": "cost_per_run_change_pct",
+                    "displayName": "cost_per_run_change_pct"
+                  }
+                ]
+              },
+              "invisibleCols": [],
+              "allowHTMLByDefault": false,
+              "itemsPerPage": 25,
+              "paginationSize": "default",
+              "condensed": true,
+              "withRowNumber": false,
+              "frame": {
+                "title": "DBUs and list cost, before vs after",
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 6,
+            "height": 10
+          }
+        }
+      ]
+    }
+  ]
+}

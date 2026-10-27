@@ -1,0 +1,11 @@
+resources:
+  apps:
+    migration_tracker_app:
+      name: serverless-migration-tracker
+      description: Fleet view of the classic-to-serverless migration, with the admin approval gate
+      source_code_path: ../src          # src/app.yaml tells Databricks how to start it
+      resources:
+        - name: sql-warehouse
+          sql_warehouse:
+            id: ${var.warehouse_id}
+            permission: CAN_USE

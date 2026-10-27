@@ -1,0 +1,13 @@
+resources:
+  jobs:
+    readiness:
+      name: "[tracker] readiness scan"
+      tasks:
+        - task_key: readiness
+          notebook_task:
+            notebook_path: ../src/02_readiness.py
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: ${var.schema}
+              mode: ${var.discovery_mode}
+          # No cluster block: runs on serverless compute.

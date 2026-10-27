@@ -1,0 +1,12 @@
+resources:
+  jobs:
+    setup_state_tables:
+      name: "[tracker] setup state tables"
+      tasks:
+        - task_key: create_tables
+          notebook_task:
+            notebook_path: ../src/00_setup_state_tables.py
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: ${var.schema}
+          # No cluster block: the job runs on serverless compute.

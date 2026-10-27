@@ -1,0 +1,13 @@
+resources:
+  jobs:
+    grant_app:
+      name: "[tracker] grant app access"
+      tasks:
+        - task_key: grant
+          notebook_task:
+            notebook_path: ../src/09_grant_app.py
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: ${var.schema}
+              app_name: serverless-migration-tracker
+          # No cluster block: runs on serverless compute.

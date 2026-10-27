@@ -1,0 +1,9 @@
+.databricks/
+.bundle/
+__pycache__/
+*.pyc
+.env
+*.log
+# Never commit raw system-table exports: they contain account IDs, emails and URLs.
+exports/
+*.tsv

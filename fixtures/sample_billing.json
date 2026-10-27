@@ -1,0 +1,1005 @@
+{
+ "note": "Illustrative sample billing rows for the demo. Prices are made up and are NOT Databricks list prices.",
+ "rows": [
+  {
+   "job_id": "1001",
+   "job_name": "etl_daily_orders",
+   "usage_date": "2026-10-01",
+   "is_serverless": false,
+   "team": "data-eng",
+   "dbus": 20.0,
+   "list_cost": 3.0,
+   "runs": 1
+  },
+  {
+   "job_id": "1001",
+   "job_name": "etl_daily_orders",
+   "usage_date": "2026-10-02",
+   "is_serverless": false,
+   "team": "data-eng",
+   "dbus": 20.0,
+   "list_cost": 3.0,
+   "runs": 1
+  },
+  {
+   "job_id": "1001",
+   "job_name": "etl_daily_orders",
+   "usage_date": "2026-10-03",
+   "is_serverless": false,
+   "team": "data-eng",
+   "dbus": 20.0,
+   "list_cost": 3.0,
+   "runs": 1
+  },
+  {
+   "job_id": "1001",
+   "job_name": "etl_daily_orders",
+   "usage_date": "2026-10-04",
+   "is_serverless": false,
+   "team": "data-eng",
+   "dbus": 20.0,
+   "list_cost": 3.0,
+   "runs": 1
+  },
+  {
+   "job_id": "1001",
+   "job_name": "etl_daily_orders",
+   "usage_date": "2026-10-05",
+   "is_serverless": false,
+   "team": "data-eng",
+   "dbus": 20.0,
+   "list_cost": 3.0,
+   "runs": 1
+  },
+  {
+   "job_id": "1001",
+   "job_name": "etl_daily_orders",
+   "usage_date": "2026-10-06",
+   "is_serverless": false,
+   "team": "data-eng",
+   "dbus": 20.0,
+   "list_cost": 3.0,
+   "runs": 1
+  },
+  {
+   "job_id": "1001",
+   "job_name": "etl_daily_orders",
+   "usage_date": "2026-10-07",
+   "is_serverless": false,
+   "team": "data-eng",
+   "dbus": 20.0,
+   "list_cost": 3.0,
+   "runs": 1
+  },
+  {
+   "job_id": "1001",
+   "job_name": "etl_daily_orders",
+   "usage_date": "2026-10-08",
+   "is_serverless": false,
+   "team": "data-eng",
+   "dbus": 20.0,
+   "list_cost": 3.0,
+   "runs": 1
+  },
+  {
+   "job_id": "1001",
+   "job_name": "etl_daily_orders",
+   "usage_date": "2026-10-09",
+   "is_serverless": false,
+   "team": "data-eng",
+   "dbus": 20.0,
+   "list_cost": 3.0,
+   "runs": 1
+  },
+  {
+   "job_id": "1001",
+   "job_name": "etl_daily_orders",
+   "usage_date": "2026-10-10",
+   "is_serverless": false,
+   "team": "data-eng",
+   "dbus": 20.0,
+   "list_cost": 3.0,
+   "runs": 1
+  },
+  {
+   "job_id": "1001",
+   "job_name": "etl_daily_orders",
+   "usage_date": "2026-10-11",
+   "is_serverless": false,
+   "team": "data-eng",
+   "dbus": 20.0,
+   "list_cost": 3.0,
+   "runs": 1
+  },
+  {
+   "job_id": "1001",
+   "job_name": "etl_daily_orders",
+   "usage_date": "2026-10-12",
+   "is_serverless": false,
+   "team": "data-eng",
+   "dbus": 20.0,
+   "list_cost": 3.0,
+   "runs": 1
+  },
+  {
+   "job_id": "1001",
+   "job_name": "etl_daily_orders",
+   "usage_date": "2026-10-13",
+   "is_serverless": false,
+   "team": "data-eng",
+   "dbus": 20.0,
+   "list_cost": 3.0,
+   "runs": 1
+  },
+  {
+   "job_id": "1001",
+   "job_name": "etl_daily_orders",
+   "usage_date": "2026-10-14",
+   "is_serverless": false,
+   "team": "data-eng",
+   "dbus": 20.0,
+   "list_cost": 3.0,
+   "runs": 1
+  },
+  {
+   "job_id": "1001",
+   "job_name": "etl_daily_orders",
+   "usage_date": "2026-10-15",
+   "is_serverless": false,
+   "team": "data-eng",
+   "dbus": 20.0,
+   "list_cost": 3.0,
+   "runs": 1
+  },
+  {
+   "job_id": "1001",
+   "job_name": "etl_daily_orders",
+   "usage_date": "2026-10-16",
+   "is_serverless": false,
+   "team": "data-eng",
+   "dbus": 20.0,
+   "list_cost": 3.0,
+   "runs": 1
+  },
+  {
+   "job_id": "1001",
+   "job_name": "etl_daily_orders",
+   "usage_date": "2026-10-17",
+   "is_serverless": false,
+   "team": "data-eng",
+   "dbus": 20.0,
+   "list_cost": 3.0,
+   "runs": 1
+  },
+  {
+   "job_id": "1001",
+   "job_name": "etl_daily_orders",
+   "usage_date": "2026-10-18",
+   "is_serverless": false,
+   "team": "data-eng",
+   "dbus": 20.0,
+   "list_cost": 3.0,
+   "runs": 1
+  },
+  {
+   "job_id": "1001",
+   "job_name": "etl_daily_orders",
+   "usage_date": "2026-10-19",
+   "is_serverless": false,
+   "team": "data-eng",
+   "dbus": 20.0,
+   "list_cost": 3.0,
+   "runs": 1
+  },
+  {
+   "job_id": "1001",
+   "job_name": "etl_daily_orders",
+   "usage_date": "2026-10-20",
+   "is_serverless": false,
+   "team": "data-eng",
+   "dbus": 20.0,
+   "list_cost": 3.0,
+   "runs": 1
+  },
+  {
+   "job_id": "1008",
+   "job_name": "etl_daily_orders [serverless clone]",
+   "usage_date": "2026-10-01",
+   "is_serverless": true,
+   "team": "data-eng",
+   "dbus": 8.0,
+   "list_cost": 2.8,
+   "runs": 1
+  },
+  {
+   "job_id": "1008",
+   "job_name": "etl_daily_orders [serverless clone]",
+   "usage_date": "2026-10-02",
+   "is_serverless": true,
+   "team": "data-eng",
+   "dbus": 8.0,
+   "list_cost": 2.8,
+   "runs": 1
+  },
+  {
+   "job_id": "1008",
+   "job_name": "etl_daily_orders [serverless clone]",
+   "usage_date": "2026-10-03",
+   "is_serverless": true,
+   "team": "data-eng",
+   "dbus": 8.0,
+   "list_cost": 2.8,
+   "runs": 1
+  },
+  {
+   "job_id": "1008",
+   "job_name": "etl_daily_orders [serverless clone]",
+   "usage_date": "2026-10-04",
+   "is_serverless": true,
+   "team": "data-eng",
+   "dbus": 8.0,
+   "list_cost": 2.8,
+   "runs": 1
+  },
+  {
+   "job_id": "1008",
+   "job_name": "etl_daily_orders [serverless clone]",
+   "usage_date": "2026-10-05",
+   "is_serverless": true,
+   "team": "data-eng",
+   "dbus": 8.0,
+   "list_cost": 2.8,
+   "runs": 1
+  },
+  {
+   "job_id": "1008",
+   "job_name": "etl_daily_orders [serverless clone]",
+   "usage_date": "2026-10-06",
+   "is_serverless": true,
+   "team": "data-eng",
+   "dbus": 8.0,
+   "list_cost": 2.8,
+   "runs": 1
+  },
+  {
+   "job_id": "1008",
+   "job_name": "etl_daily_orders [serverless clone]",
+   "usage_date": "2026-10-07",
+   "is_serverless": true,
+   "team": "data-eng",
+   "dbus": 8.0,
+   "list_cost": 2.8,
+   "runs": 1
+  },
+  {
+   "job_id": "1008",
+   "job_name": "etl_daily_orders [serverless clone]",
+   "usage_date": "2026-10-08",
+   "is_serverless": true,
+   "team": "data-eng",
+   "dbus": 8.0,
+   "list_cost": 2.8,
+   "runs": 1
+  },
+  {
+   "job_id": "1008",
+   "job_name": "etl_daily_orders [serverless clone]",
+   "usage_date": "2026-10-09",
+   "is_serverless": true,
+   "team": "data-eng",
+   "dbus": 8.0,
+   "list_cost": 2.8,
+   "runs": 1
+  },
+  {
+   "job_id": "1008",
+   "job_name": "etl_daily_orders [serverless clone]",
+   "usage_date": "2026-10-10",
+   "is_serverless": true,
+   "team": "data-eng",
+   "dbus": 8.0,
+   "list_cost": 2.8,
+   "runs": 1
+  },
+  {
+   "job_id": "1008",
+   "job_name": "etl_daily_orders [serverless clone]",
+   "usage_date": "2026-10-11",
+   "is_serverless": true,
+   "team": "data-eng",
+   "dbus": 8.0,
+   "list_cost": 2.8,
+   "runs": 1
+  },
+  {
+   "job_id": "1008",
+   "job_name": "etl_daily_orders [serverless clone]",
+   "usage_date": "2026-10-12",
+   "is_serverless": true,
+   "team": "data-eng",
+   "dbus": 8.0,
+   "list_cost": 2.8,
+   "runs": 1
+  },
+  {
+   "job_id": "1008",
+   "job_name": "etl_daily_orders [serverless clone]",
+   "usage_date": "2026-10-13",
+   "is_serverless": true,
+   "team": "data-eng",
+   "dbus": 8.0,
+   "list_cost": 2.8,
+   "runs": 1
+  },
+  {
+   "job_id": "1008",
+   "job_name": "etl_daily_orders [serverless clone]",
+   "usage_date": "2026-10-14",
+   "is_serverless": true,
+   "team": "data-eng",
+   "dbus": 8.0,
+   "list_cost": 2.8,
+   "runs": 1
+  },
+  {
+   "job_id": "1008",
+   "job_name": "etl_daily_orders [serverless clone]",
+   "usage_date": "2026-10-15",
+   "is_serverless": true,
+   "team": "data-eng",
+   "dbus": 8.0,
+   "list_cost": 2.8,
+   "runs": 1
+  },
+  {
+   "job_id": "1008",
+   "job_name": "etl_daily_orders [serverless clone]",
+   "usage_date": "2026-10-16",
+   "is_serverless": true,
+   "team": "data-eng",
+   "dbus": 8.0,
+   "list_cost": 2.8,
+   "runs": 1
+  },
+  {
+   "job_id": "1008",
+   "job_name": "etl_daily_orders [serverless clone]",
+   "usage_date": "2026-10-17",
+   "is_serverless": true,
+   "team": "data-eng",
+   "dbus": 8.0,
+   "list_cost": 2.8,
+   "runs": 1
+  },
+  {
+   "job_id": "1008",
+   "job_name": "etl_daily_orders [serverless clone]",
+   "usage_date": "2026-10-18",
+   "is_serverless": true,
+   "team": "data-eng",
+   "dbus": 8.0,
+   "list_cost": 2.8,
+   "runs": 1
+  },
+  {
+   "job_id": "1008",
+   "job_name": "etl_daily_orders [serverless clone]",
+   "usage_date": "2026-10-19",
+   "is_serverless": true,
+   "team": "data-eng",
+   "dbus": 8.0,
+   "list_cost": 2.8,
+   "runs": 1
+  },
+  {
+   "job_id": "1008",
+   "job_name": "etl_daily_orders [serverless clone]",
+   "usage_date": "2026-10-20",
+   "is_serverless": true,
+   "team": "data-eng",
+   "dbus": 8.0,
+   "list_cost": 2.8,
+   "runs": 1
+  },
+  {
+   "job_id": "1009",
+   "job_name": "simple_classic_job",
+   "usage_date": "2026-10-01",
+   "is_serverless": false,
+   "team": "analytics",
+   "dbus": 12.0,
+   "list_cost": 1.8,
+   "runs": 1
+  },
+  {
+   "job_id": "1009",
+   "job_name": "simple_classic_job",
+   "usage_date": "2026-10-02",
+   "is_serverless": false,
+   "team": "analytics",
+   "dbus": 12.0,
+   "list_cost": 1.8,
+   "runs": 1
+  },
+  {
+   "job_id": "1009",
+   "job_name": "simple_classic_job",
+   "usage_date": "2026-10-03",
+   "is_serverless": false,
+   "team": "analytics",
+   "dbus": 12.0,
+   "list_cost": 1.8,
+   "runs": 1
+  },
+  {
+   "job_id": "1009",
+   "job_name": "simple_classic_job",
+   "usage_date": "2026-10-04",
+   "is_serverless": false,
+   "team": "analytics",
+   "dbus": 12.0,
+   "list_cost": 1.8,
+   "runs": 1
+  },
+  {
+   "job_id": "1009",
+   "job_name": "simple_classic_job",
+   "usage_date": "2026-10-05",
+   "is_serverless": false,
+   "team": "analytics",
+   "dbus": 12.0,
+   "list_cost": 1.8,
+   "runs": 1
+  },
+  {
+   "job_id": "1009",
+   "job_name": "simple_classic_job",
+   "usage_date": "2026-10-06",
+   "is_serverless": false,
+   "team": "analytics",
+   "dbus": 12.0,
+   "list_cost": 1.8,
+   "runs": 1
+  },
+  {
+   "job_id": "1009",
+   "job_name": "simple_classic_job",
+   "usage_date": "2026-10-07",
+   "is_serverless": false,
+   "team": "analytics",
+   "dbus": 12.0,
+   "list_cost": 1.8,
+   "runs": 1
+  },
+  {
+   "job_id": "1009",
+   "job_name": "simple_classic_job",
+   "usage_date": "2026-10-08",
+   "is_serverless": false,
+   "team": "analytics",
+   "dbus": 12.0,
+   "list_cost": 1.8,
+   "runs": 1
+  },
+  {
+   "job_id": "1009",
+   "job_name": "simple_classic_job",
+   "usage_date": "2026-10-09",
+   "is_serverless": false,
+   "team": "analytics",
+   "dbus": 12.0,
+   "list_cost": 1.8,
+   "runs": 1
+  },
+  {
+   "job_id": "1009",
+   "job_name": "simple_classic_job",
+   "usage_date": "2026-10-10",
+   "is_serverless": false,
+   "team": "analytics",
+   "dbus": 12.0,
+   "list_cost": 1.8,
+   "runs": 1
+  },
+  {
+   "job_id": "1009",
+   "job_name": "simple_classic_job",
+   "usage_date": "2026-10-11",
+   "is_serverless": true,
+   "team": "analytics",
+   "dbus": 7.0,
+   "list_cost": 2.45,
+   "runs": 1
+  },
+  {
+   "job_id": "1009",
+   "job_name": "simple_classic_job",
+   "usage_date": "2026-10-12",
+   "is_serverless": true,
+   "team": "analytics",
+   "dbus": 7.0,
+   "list_cost": 2.45,
+   "runs": 1
+  },
+  {
+   "job_id": "1009",
+   "job_name": "simple_classic_job",
+   "usage_date": "2026-10-13",
+   "is_serverless": true,
+   "team": "analytics",
+   "dbus": 7.0,
+   "list_cost": 2.45,
+   "runs": 1
+  },
+  {
+   "job_id": "1009",
+   "job_name": "simple_classic_job",
+   "usage_date": "2026-10-14",
+   "is_serverless": true,
+   "team": "analytics",
+   "dbus": 7.0,
+   "list_cost": 2.45,
+   "runs": 1
+  },
+  {
+   "job_id": "1009",
+   "job_name": "simple_classic_job",
+   "usage_date": "2026-10-15",
+   "is_serverless": true,
+   "team": "analytics",
+   "dbus": 7.0,
+   "list_cost": 2.45,
+   "runs": 1
+  },
+  {
+   "job_id": "1009",
+   "job_name": "simple_classic_job",
+   "usage_date": "2026-10-16",
+   "is_serverless": true,
+   "team": "analytics",
+   "dbus": 7.0,
+   "list_cost": 2.45,
+   "runs": 1
+  },
+  {
+   "job_id": "1009",
+   "job_name": "simple_classic_job",
+   "usage_date": "2026-10-17",
+   "is_serverless": true,
+   "team": "analytics",
+   "dbus": 7.0,
+   "list_cost": 2.45,
+   "runs": 1
+  },
+  {
+   "job_id": "1009",
+   "job_name": "simple_classic_job",
+   "usage_date": "2026-10-18",
+   "is_serverless": true,
+   "team": "analytics",
+   "dbus": 7.0,
+   "list_cost": 2.45,
+   "runs": 1
+  },
+  {
+   "job_id": "1009",
+   "job_name": "simple_classic_job",
+   "usage_date": "2026-10-19",
+   "is_serverless": true,
+   "team": "analytics",
+   "dbus": 7.0,
+   "list_cost": 2.45,
+   "runs": 1
+  },
+  {
+   "job_id": "1009",
+   "job_name": "simple_classic_job",
+   "usage_date": "2026-10-20",
+   "is_serverless": true,
+   "team": "analytics",
+   "dbus": 7.0,
+   "list_cost": 2.45,
+   "runs": 1
+  },
+  {
+   "job_id": "1007",
+   "job_name": "already_serverless_job",
+   "usage_date": "2026-10-01",
+   "is_serverless": true,
+   "team": "data-eng",
+   "dbus": 5.0,
+   "list_cost": 1.75,
+   "runs": 1
+  },
+  {
+   "job_id": "1007",
+   "job_name": "already_serverless_job",
+   "usage_date": "2026-10-02",
+   "is_serverless": true,
+   "team": "data-eng",
+   "dbus": 5.0,
+   "list_cost": 1.75,
+   "runs": 1
+  },
+  {
+   "job_id": "1007",
+   "job_name": "already_serverless_job",
+   "usage_date": "2026-10-03",
+   "is_serverless": true,
+   "team": "data-eng",
+   "dbus": 5.0,
+   "list_cost": 1.75,
+   "runs": 1
+  },
+  {
+   "job_id": "1007",
+   "job_name": "already_serverless_job",
+   "usage_date": "2026-10-04",
+   "is_serverless": true,
+   "team": "data-eng",
+   "dbus": 5.0,
+   "list_cost": 1.75,
+   "runs": 1
+  },
+  {
+   "job_id": "1007",
+   "job_name": "already_serverless_job",
+   "usage_date": "2026-10-05",
+   "is_serverless": true,
+   "team": "data-eng",
+   "dbus": 5.0,
+   "list_cost": 1.75,
+   "runs": 1
+  },
+  {
+   "job_id": "1007",
+   "job_name": "already_serverless_job",
+   "usage_date": "2026-10-06",
+   "is_serverless": true,
+   "team": "data-eng",
+   "dbus": 5.0,
+   "list_cost": 1.75,
+   "runs": 1
+  },
+  {
+   "job_id": "1007",
+   "job_name": "already_serverless_job",
+   "usage_date": "2026-10-07",
+   "is_serverless": true,
+   "team": "data-eng",
+   "dbus": 5.0,
+   "list_cost": 1.75,
+   "runs": 1
+  },
+  {
+   "job_id": "1007",
+   "job_name": "already_serverless_job",
+   "usage_date": "2026-10-08",
+   "is_serverless": true,
+   "team": "data-eng",
+   "dbus": 5.0,
+   "list_cost": 1.75,
+   "runs": 1
+  },
+  {
+   "job_id": "1007",
+   "job_name": "already_serverless_job",
+   "usage_date": "2026-10-09",
+   "is_serverless": true,
+   "team": "data-eng",
+   "dbus": 5.0,
+   "list_cost": 1.75,
+   "runs": 1
+  },
+  {
+   "job_id": "1007",
+   "job_name": "already_serverless_job",
+   "usage_date": "2026-10-10",
+   "is_serverless": true,
+   "team": "data-eng",
+   "dbus": 5.0,
+   "list_cost": 1.75,
+   "runs": 1
+  },
+  {
+   "job_id": "1007",
+   "job_name": "already_serverless_job",
+   "usage_date": "2026-10-11",
+   "is_serverless": true,
+   "team": "data-eng",
+   "dbus": 5.0,
+   "list_cost": 1.75,
+   "runs": 1
+  },
+  {
+   "job_id": "1007",
+   "job_name": "already_serverless_job",
+   "usage_date": "2026-10-12",
+   "is_serverless": true,
+   "team": "data-eng",
+   "dbus": 5.0,
+   "list_cost": 1.75,
+   "runs": 1
+  },
+  {
+   "job_id": "1007",
+   "job_name": "already_serverless_job",
+   "usage_date": "2026-10-13",
+   "is_serverless": true,
+   "team": "data-eng",
+   "dbus": 5.0,
+   "list_cost": 1.75,
+   "runs": 1
+  },
+  {
+   "job_id": "1007",
+   "job_name": "already_serverless_job",
+   "usage_date": "2026-10-14",
+   "is_serverless": true,
+   "team": "data-eng",
+   "dbus": 5.0,
+   "list_cost": 1.75,
+   "runs": 1
+  },
+  {
+   "job_id": "1007",
+   "job_name": "already_serverless_job",
+   "usage_date": "2026-10-15",
+   "is_serverless": true,
+   "team": "data-eng",
+   "dbus": 5.0,
+   "list_cost": 1.75,
+   "runs": 1
+  },
+  {
+   "job_id": "1007",
+   "job_name": "already_serverless_job",
+   "usage_date": "2026-10-16",
+   "is_serverless": true,
+   "team": "data-eng",
+   "dbus": 5.0,
+   "list_cost": 1.75,
+   "runs": 1
+  },
+  {
+   "job_id": "1007",
+   "job_name": "already_serverless_job",
+   "usage_date": "2026-10-17",
+   "is_serverless": true,
+   "team": "data-eng",
+   "dbus": 5.0,
+   "list_cost": 1.75,
+   "runs": 1
+  },
+  {
+   "job_id": "1007",
+   "job_name": "already_serverless_job",
+   "usage_date": "2026-10-18",
+   "is_serverless": true,
+   "team": "data-eng",
+   "dbus": 5.0,
+   "list_cost": 1.75,
+   "runs": 1
+  },
+  {
+   "job_id": "1007",
+   "job_name": "already_serverless_job",
+   "usage_date": "2026-10-19",
+   "is_serverless": true,
+   "team": "data-eng",
+   "dbus": 5.0,
+   "list_cost": 1.75,
+   "runs": 1
+  },
+  {
+   "job_id": "1007",
+   "job_name": "already_serverless_job",
+   "usage_date": "2026-10-20",
+   "is_serverless": true,
+   "team": "data-eng",
+   "dbus": 5.0,
+   "list_cost": 1.75,
+   "runs": 1
+  },
+  {
+   "job_id": "1002",
+   "job_name": "legacy_init_script_job",
+   "usage_date": "2026-10-01",
+   "is_serverless": false,
+   "team": "finance",
+   "dbus": 15.0,
+   "list_cost": 2.25,
+   "runs": 1
+  },
+  {
+   "job_id": "1002",
+   "job_name": "legacy_init_script_job",
+   "usage_date": "2026-10-02",
+   "is_serverless": false,
+   "team": "finance",
+   "dbus": 15.0,
+   "list_cost": 2.25,
+   "runs": 1
+  },
+  {
+   "job_id": "1002",
+   "job_name": "legacy_init_script_job",
+   "usage_date": "2026-10-03",
+   "is_serverless": false,
+   "team": "finance",
+   "dbus": 15.0,
+   "list_cost": 2.25,
+   "runs": 1
+  },
+  {
+   "job_id": "1002",
+   "job_name": "legacy_init_script_job",
+   "usage_date": "2026-10-04",
+   "is_serverless": false,
+   "team": "finance",
+   "dbus": 15.0,
+   "list_cost": 2.25,
+   "runs": 1
+  },
+  {
+   "job_id": "1002",
+   "job_name": "legacy_init_script_job",
+   "usage_date": "2026-10-05",
+   "is_serverless": false,
+   "team": "finance",
+   "dbus": 15.0,
+   "list_cost": 2.25,
+   "runs": 1
+  },
+  {
+   "job_id": "1002",
+   "job_name": "legacy_init_script_job",
+   "usage_date": "2026-10-06",
+   "is_serverless": false,
+   "team": "finance",
+   "dbus": 15.0,
+   "list_cost": 2.25,
+   "runs": 1
+  },
+  {
+   "job_id": "1002",
+   "job_name": "legacy_init_script_job",
+   "usage_date": "2026-10-07",
+   "is_serverless": false,
+   "team": "finance",
+   "dbus": 15.0,
+   "list_cost": 2.25,
+   "runs": 1
+  },
+  {
+   "job_id": "1002",
+   "job_name": "legacy_init_script_job",
+   "usage_date": "2026-10-08",
+   "is_serverless": false,
+   "team": "finance",
+   "dbus": 15.0,
+   "list_cost": 2.25,
+   "runs": 1
+  },
+  {
+   "job_id": "1002",
+   "job_name": "legacy_init_script_job",
+   "usage_date": "2026-10-09",
+   "is_serverless": false,
+   "team": "finance",
+   "dbus": 15.0,
+   "list_cost": 2.25,
+   "runs": 1
+  },
+  {
+   "job_id": "1002",
+   "job_name": "legacy_init_script_job",
+   "usage_date": "2026-10-10",
+   "is_serverless": false,
+   "team": "finance",
+   "dbus": 15.0,
+   "list_cost": 2.25,
+   "runs": 1
+  },
+  {
+   "job_id": "1002",
+   "job_name": "legacy_init_script_job",
+   "usage_date": "2026-10-11",
+   "is_serverless": false,
+   "team": "finance",
+   "dbus": 15.0,
+   "list_cost": 2.25,
+   "runs": 1
+  },
+  {
+   "job_id": "1002",
+   "job_name": "legacy_init_script_job",
+   "usage_date": "2026-10-12",
+   "is_serverless": false,
+   "team": "finance",
+   "dbus": 15.0,
+   "list_cost": 2.25,
+   "runs": 1
+  },
+  {
+   "job_id": "1002",
+   "job_name": "legacy_init_script_job",
+   "usage_date": "2026-10-13",
+   "is_serverless": false,
+   "team": "finance",
+   "dbus": 15.0,
+   "list_cost": 2.25,
+   "runs": 1
+  },
+  {
+   "job_id": "1002",
+   "job_name": "legacy_init_script_job",
+   "usage_date": "2026-10-14",
+   "is_serverless": false,
+   "team": "finance",
+   "dbus": 15.0,
+   "list_cost": 2.25,
+   "runs": 1
+  },
+  {
+   "job_id": "1002",
+   "job_name": "legacy_init_script_job",
+   "usage_date": "2026-10-15",
+   "is_serverless": false,
+   "team": "finance",
+   "dbus": 15.0,
+   "list_cost": 2.25,
+   "runs": 1
+  },
+  {
+   "job_id": "1002",
+   "job_name": "legacy_init_script_job",
+   "usage_date": "2026-10-16",
+   "is_serverless": false,
+   "team": "finance",
+   "dbus": 15.0,
+   "list_cost": 2.25,
+   "runs": 1
+  },
+  {
+   "job_id": "1002",
+   "job_name": "legacy_init_script_job",
+   "usage_date": "2026-10-17",
+   "is_serverless": false,
+   "team": "finance",
+   "dbus": 15.0,
+   "list_cost": 2.25,
+   "runs": 1
+  },
+  {
+   "job_id": "1002",
+   "job_name": "legacy_init_script_job",
+   "usage_date": "2026-10-18",
+   "is_serverless": false,
+   "team": "finance",
+   "dbus": 15.0,
+   "list_cost": 2.25,
+   "runs": 1
+  },
+  {
+   "job_id": "1002",
+   "job_name": "legacy_init_script_job",
+   "usage_date": "2026-10-19",
+   "is_serverless": false,
+   "team": "finance",
+   "dbus": 15.0,
+   "list_cost": 2.25,
+   "runs": 1
+  },
+  {
+   "job_id": "1002",
+   "job_name": "legacy_init_script_job",
+   "usage_date": "2026-10-20",
+   "is_serverless": false,
+   "team": "finance",
+   "dbus": 15.0,
+   "list_cost": 2.25,
+   "runs": 1
+  }
+ ]
+}

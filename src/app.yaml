@@ -1,0 +1,9 @@
+# Databricks Apps runtime config. Source root is src/, so the app can import the shared `tracker` package.
+command: ["streamlit", "run", "app/main.py", "--server.headless", "true"]
+env:
+  - name: DATABRICKS_WAREHOUSE_ID
+    valueFrom: sql-warehouse        # the SQL warehouse resource declared in resources/app.yml
+  - name: TRACKER_CATALOG
+    value: workspace                # change both if you deploy with a different catalog or schema
+  - name: TRACKER_SCHEMA
+    value: serverless_migration

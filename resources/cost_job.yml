@@ -1,0 +1,13 @@
+resources:
+  jobs:
+    cost:
+      name: "[tracker] cost comparison"
+      tasks:
+        - task_key: cost
+          notebook_task:
+            notebook_path: ../src/06_cost.py
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: ${var.schema}
+              cost_source: ${var.cost_source}
+      # No cluster block: runs on serverless compute.

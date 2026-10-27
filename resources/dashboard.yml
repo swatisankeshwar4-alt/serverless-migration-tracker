@@ -1,0 +1,8 @@
+resources:
+  dashboards:
+    migration_dashboard:
+      display_name: "[tracker] Serverless migration progress"
+      file_path: ../dashboards/migration_progress.lvdash.json
+      warehouse_id: ${var.warehouse_id}
+      dataset_catalog: ${var.catalog}     # the queries use bare table names; these two fields qualify them
+      dataset_schema: ${var.schema}

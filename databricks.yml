@@ -1,0 +1,31 @@
+bundle:
+  name: serverless-migration-tracker
+
+# Variables let judges deploy on any workspace without editing code.
+variables:
+  catalog:
+    description: Unity Catalog catalog that will hold the tracker tables
+    default: workspace
+  schema:
+    description: Schema (created if missing) for the tracker tables
+    default: serverless_migration
+  discovery_mode:
+    description: FIXTURE reads the sample definitions in fixtures/, LIVE reads this workspace through the SDK
+    default: FIXTURE
+  warehouse_id:
+    description: SQL warehouse for the app and dashboard. Looked up by name; override with --var="warehouse_id=<id>"
+    lookup:
+      warehouse: "Serverless Starter Warehouse"
+  cost_source:
+    description: SAMPLE uses made-up billing rows for the demo, SYSTEM reads system.billing.usage
+    default: SAMPLE
+
+include:
+  - resources/*.yml
+
+targets:
+  dev:
+    mode: development
+    default: true
+    # No workspace host here on purpose: the CLI profile (-p) supplies it,
+    # so no workspace URL is ever committed to the repo.
